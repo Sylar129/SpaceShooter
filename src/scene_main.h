@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include "player.h"
 #include "scene.h"
-
 namespace spaceshooter {
 
 class SceneMain : public Scene {
@@ -13,6 +13,9 @@ class SceneMain : public Scene {
   virtual void Update() override;
   virtual void Render() override;
   virtual void Clean() override;
+
+ private:
+  Player player_;
 };
 
 }  // namespace spaceshooter

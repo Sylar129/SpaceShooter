@@ -2,6 +2,8 @@
 
 #include "game.h"
 
+#include <SDL_image.h>
+
 #include "scene_main.h"
 
 namespace spaceshooter {
@@ -34,6 +36,12 @@ void Game::Init() {
     return;
   }
 
+  constexpr int kImgInitFlag = IMG_INIT_PNG;
+  if (IMG_Init(kImgInitFlag) != kImgInitFlag) {
+    SDL_Log("IMG_Init Error: %s\n", IMG_GetError());
+    return;
+  }
+
   is_running_ = true;
   current_scene_->Init();
 }
@@ -47,6 +55,8 @@ void Game::Run() {
 }
 
 void Game::Clean() {
+  IMG_Quit();
+
   SDL_DestroyRenderer(renderer_);
   SDL_DestroyWindow(window_);
   SDL_Quit();

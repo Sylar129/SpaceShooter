@@ -5,7 +5,7 @@
 #include "game.h"
 
 int main(int, char**) {
-  spaceshooter::Game game(600, 800);
+  spaceshooter::Game& game = spaceshooter::Game::Get();
 
   game.Init();
   game.Run();
