@@ -2,8 +2,7 @@
 
 #include "game.h"
 
-#include <SDL_image.h>
-
+#include "SDL_image.h"
 #include "scene_main.h"
 
 namespace spaceshooter {

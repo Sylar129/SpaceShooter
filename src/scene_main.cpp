@@ -6,9 +6,9 @@ namespace spaceshooter {
 
 void SceneMain::Init() {}
 
-void SceneMain::HandleEvent(SDL_Event* event) {}
+void SceneMain::HandleEvent(SDL_Event* event) { player_.HandleEvent(event); }
 
-void SceneMain::Update() {}
+void SceneMain::Update() { player_.Update(); }
 
 void SceneMain::Render() { player_.Render(); }
 

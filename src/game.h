@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include <SDL_render.h>
-#include <SDL_video.h>
 #include <memory>
 
+#include "SDL_render.h"
+#include "SDL_video.h"
 #include "scene.h"
 
 namespace spaceshooter {
