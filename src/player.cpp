@@ -10,21 +10,20 @@ namespace spaceshooter {
 
 Player::Player() {
   constexpr float kScale = 0.25;
-  texture =
+  texture_ =
       IMG_LoadTexture(Game::Get().GetRenderer(), "assets/image/SpaceShip.png");
-  SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-  width *= kScale;
-  height *= kScale;
+  SDL_QueryTexture(texture_, nullptr, nullptr, &rect_.w, &rect_.h);
+  rect_.w *= kScale;
+  rect_.h *= kScale;
 
-  poisition.x = Game::Get().GetWindowWidth() / 2 - width / 2;
-  poisition.y = Game::Get().GetWindowHeight() - height;
+  rect_.x = Game::Get().GetWindowWidth() / 2 - rect_.w / 2;
+  rect_.y = Game::Get().GetWindowHeight() - rect_.h;
 }
 
-Player::~Player() { SDL_DestroyTexture(texture); }
+Player::~Player() { SDL_DestroyTexture(texture_); }
 
 void Player::Render() {
-  SDL_Rect player_rect = {poisition.x, poisition.y, width, height};
-  SDL_RenderCopy(Game::Get().GetRenderer(), texture, nullptr, &player_rect);
+  SDL_RenderCopy(Game::Get().GetRenderer(), texture_, nullptr, &rect_);
 }
 
 }  // namespace spaceshooter

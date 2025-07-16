@@ -2,12 +2,14 @@
 
 #pragma once
 
-#include <SDL.h>
+#include <SDL_events.h>
 
 namespace spaceshooter {
 
 class Scene {
  public:
+  virtual ~Scene() = default;
+
   virtual void Init() = 0;
   virtual void HandleEvent(SDL_Event* event) = 0;
   virtual void Update() = 0;

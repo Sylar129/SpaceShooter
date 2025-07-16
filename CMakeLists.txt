@@ -9,6 +9,7 @@ if (MSVC)
   add_compile_options(/W4)
 else()
   add_compile_options(-Wall -Wextra -Wpedantic)
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR})

@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include <SDL.h>
+#include <SDL_rect.h>
+#include <SDL_render.h>
 
 namespace spaceshooter {
 
@@ -14,10 +15,8 @@ class Player {
   void Render();
 
  private:
-  SDL_Texture* texture = nullptr;
-  SDL_FPoint poisition{};
-  int width{};
-  int height{};
+   SDL_Texture *texture_ = nullptr;
+   SDL_Rect rect_{};
 };
 
 }  // namespace spaceshooter

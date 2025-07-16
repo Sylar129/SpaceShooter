@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <SDL_render.h>
+#include <SDL_video.h>
 #include <memory>
 
 #include "scene.h"

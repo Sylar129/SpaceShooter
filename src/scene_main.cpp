@@ -2,10 +2,6 @@
 
 #include "scene_main.h"
 
-#include <SDL_image.h>
-
-#include "game.h"
-
 namespace spaceshooter {
 
 void SceneMain::Init() {}

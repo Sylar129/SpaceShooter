@@ -4,21 +4,22 @@
 
 #include "player.h"
 #include "scene.h"
+
 namespace spaceshooter {
 
 class SceneMain : public Scene {
  public:
   SceneMain() = default;
-  ~SceneMain() = default;
+  ~SceneMain() override = default;
 
-  virtual void Init() override;
-  virtual void HandleEvent(SDL_Event* event) override;
-  virtual void Update() override;
-  virtual void Render() override;
-  virtual void Clean() override;
+  void Init() override;
+  void HandleEvent(SDL_Event *event) override;
+  void Update() override;
+  void Render() override;
+  void Clean() override;
 
  private:
   Player player_;
 };
 
-}  // namespace spaceshooter
+} // namespace spaceshooter

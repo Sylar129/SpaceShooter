@@ -1,7 +1,5 @@
 // Copyright (c) 2025 Sylar129. All rights reserved
 
-#include <iostream>
-
 #include "game.h"
 
 int main(int, char**) {
