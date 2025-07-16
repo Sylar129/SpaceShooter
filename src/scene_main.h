@@ -8,6 +8,9 @@ namespace spaceshooter {
 
 class SceneMain : public Scene {
  public:
+  SceneMain() = default;
+  ~SceneMain() = default;
+
   virtual void Init() override;
   virtual void HandleEvent(SDL_Event* event) override;
   virtual void Update() override;

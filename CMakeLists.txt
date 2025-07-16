@@ -24,7 +24,8 @@ find_package(SDL2_ttf REQUIRED)
 add_executable(${TARGET}
                 src/main.cpp
                 src/game.cpp
-                src/scene_main.cpp)
+                src/scene_main.cpp
+                src/player.cpp)
 
 target_link_libraries(${TARGET}
                         ${SDL2_LIBRARIES}

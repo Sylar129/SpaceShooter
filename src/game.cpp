@@ -9,10 +9,7 @@
 namespace spaceshooter {
 
 Game::Game(int width, int height)
-    : is_running_(false),
-      current_scene_(std::make_shared<SceneMain>()),
-      window_width_(width),
-      window_height_(height) {}
+    : is_running_(false), window_width_(width), window_height_(height) {}
 
 Game::~Game() {}
 
@@ -43,6 +40,7 @@ void Game::Init() {
   }
 
   is_running_ = true;
+  current_scene_ = std::make_shared<SceneMain>();
   current_scene_->Init();
 }
 

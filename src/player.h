@@ -6,7 +6,14 @@
 
 namespace spaceshooter {
 
-struct Player {
+class Player {
+ public:
+  Player();
+  ~Player();
+
+  void Render();
+
+ private:
   SDL_Texture* texture = nullptr;
   SDL_FPoint poisition{};
   int width{};
