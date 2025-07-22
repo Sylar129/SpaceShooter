@@ -3,7 +3,7 @@
 #include "game.h"
 
 int main(int, char**) {
-  spaceshooter::Game& game = spaceshooter::Game::Get();
+  spaceshooter::Game &game = spaceshooter::Game::Get();
 
   game.Init();
   game.Run();

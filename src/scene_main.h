@@ -13,7 +13,7 @@ class SceneMain : public Scene {
   ~SceneMain() override = default;
 
   void Init() override;
-  void HandleEvent(SDL_Event *event) override;
+  void HandleEvent(SDL_Event* event) override;
   void Update() override;
   void Render() override;
   void Clean() override;
@@ -22,4 +22,4 @@ class SceneMain : public Scene {
   Player player_;
 };
 
-} // namespace spaceshooter
+}  // namespace spaceshooter

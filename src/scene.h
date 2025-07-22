@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <SDL_events.h>
+#include "SDL_events.h"
 
 namespace spaceshooter {
 
