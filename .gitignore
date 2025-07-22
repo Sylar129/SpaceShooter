@@ -14,5 +14,6 @@ CMakeUserPresets.json
 .vscode/
 build/
 *.exe
+*.dll
 *.pdb
 .cache/

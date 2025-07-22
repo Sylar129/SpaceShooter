@@ -17,10 +17,22 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR})
 
 set(TARGET ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME})
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_ttf REQUIRED)
+include(FetchContent)
+
+FetchContent_Declare(
+    SDL2
+    URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.32.8.zip
+)
+FetchContent_MakeAvailable(SDL2)
+include_directories(AFTER ${SDL2_SOURCE_DIR}/include)
+
+FetchContent_Declare(
+    SDL2_image
+    URL https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.8.8.zip
+)
+set(SDL2IMAGE_VENDORED OFF)
+FetchContent_MakeAvailable(SDL2_image)
+include_directories(AFTER ${SDL2_image_SOURCE_DIR}/include)
 
 add_executable(${TARGET}
                 src/main.cpp
@@ -29,7 +41,5 @@ add_executable(${TARGET}
                 src/player.cpp)
 
 target_link_libraries(${TARGET}
-                        ${SDL2_LIBRARIES}
-                        SDL2_image::SDL2_image
-                        SDL2_mixer::SDL2_mixer
-                        SDL2_ttf::SDL2_ttf)
+                        SDL2::SDL2
+                        SDL2_image::SDL2_image)
