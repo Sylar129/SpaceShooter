@@ -12,7 +12,7 @@ class Scene {
 
   virtual void Init() = 0;
   virtual void HandleEvent(SDL_Event* event) = 0;
-  virtual void Update() = 0;
+  virtual void Update(Uint32 delta_time) = 0;
   virtual void Render() = 0;
   virtual void Clean() = 0;
 };

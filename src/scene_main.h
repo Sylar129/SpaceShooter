@@ -14,7 +14,7 @@ class SceneMain : public Scene {
 
   void Init() override;
   void HandleEvent(SDL_Event* event) override;
-  void Update() override;
+  void Update(Uint32 delta_time) override;
   void Render() override;
   void Clean() override;
 
