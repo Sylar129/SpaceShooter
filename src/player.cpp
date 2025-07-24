@@ -22,26 +22,27 @@ Player::Player() {
   position_.x = Game::Get().GetWindowWidth() / 2 - width_ / 2;
   position_.y = Game::Get().GetWindowHeight() - height_;
 
-  speed_ = 1;
+  speed_ = 0.5;
 }
 
 Player::~Player() { SDL_DestroyTexture(texture_); }
 
 void Player::HandleEvent(SDL_Event *event) {}
 
-void Player::Update() {
+void Player::Update(Uint32 delta_time) {
   auto key_states = SDL_GetKeyboardState(nullptr);
+  auto distance = delta_time * speed_;
   if (key_states[SDL_SCANCODE_A]) {
-    position_.x -= speed_;
+    position_.x -= distance;
   }
   if (key_states[SDL_SCANCODE_D]) {
-    position_.x += speed_;
+    position_.x += distance;
   }
   if (key_states[SDL_SCANCODE_W]) {
-    position_.y -= speed_;
+    position_.y -= distance;
   }
   if (key_states[SDL_SCANCODE_S]) {
-    position_.y += speed_;
+    position_.y += distance;
   }
 
   if (position_.x < 0) {

@@ -6,6 +6,7 @@
 #include <SDL_video.h>
 #include <memory>
 
+#include "SDL_stdinc.h"
 #include "scene.h"
 
 namespace spaceshooter {
@@ -34,7 +35,7 @@ class Game {
  private:
   Game(int width, int height);
   void HandleEvent();
-  void Update();
+  void Update(Uint32 delta_time);
   void Render();
 
   bool is_running_;

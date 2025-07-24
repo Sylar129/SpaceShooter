@@ -14,7 +14,7 @@ class Player {
   ~Player();
 
   void HandleEvent(SDL_Event* event);
-  void Update();
+  void Update(Uint32 delta_time);
   void Render();
 
  private:

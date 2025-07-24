@@ -2,7 +2,11 @@
 
 #include "game.h"
 
+#include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_log.h"
+#include "SDL_stdinc.h"
+#include "SDL_timer.h"
 #include "scene_main.h"
 
 namespace spaceshooter {
@@ -44,10 +48,26 @@ void Game::Init() {
 }
 
 void Game::Run() {
+  constexpr bool kEnableConstantFps = true;
+  constexpr Uint32 kFps = 60;
+  constexpr Uint32 kFrameTime = 1000 / kFps;
+
+  Uint32 delta_time = 0;
   while (is_running_) {
+    Uint32 start_time = SDL_GetTicks();
     HandleEvent();
-    Update();
+    Update(delta_time);
     Render();
+    delta_time = SDL_GetTicks() - start_time;
+    // SDL_Log("delta time: %d", delta_time);
+    if constexpr (kEnableConstantFps) {
+      if (delta_time < kFrameTime) {
+        SDL_Delay(kFrameTime - delta_time);
+        delta_time = kFrameTime;
+      } else {
+        SDL_LogWarn(0, "large frame time: %d", delta_time);
+      }
+    }
   }
 }
 
@@ -79,7 +99,7 @@ void Game::HandleEvent() {
   }
 }
 
-void Game::Update() { current_scene_->Update(); }
+void Game::Update(Uint32 delta_time) { current_scene_->Update(delta_time); }
 
 void Game::Render() {
   SDL_RenderClear(renderer_);
