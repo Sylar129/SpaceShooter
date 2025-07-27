@@ -22,6 +22,7 @@ include(FetchContent)
 FetchContent_Declare(
     SDL2
     URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.32.8.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(SDL2)
 include_directories(AFTER ${SDL2_SOURCE_DIR}/include)
@@ -29,6 +30,7 @@ include_directories(AFTER ${SDL2_SOURCE_DIR}/include)
 FetchContent_Declare(
     SDL2_image
     URL https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.8.8.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 set(SDL2IMAGE_VENDORED OFF)
 FetchContent_MakeAvailable(SDL2_image)
@@ -38,6 +40,7 @@ add_executable(${TARGET}
                 src/main.cpp
                 src/game.cpp
                 src/scene_main.cpp
+                src/texture.cpp
                 src/player.cpp)
 
 target_link_libraries(${TARGET}

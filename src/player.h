@@ -2,11 +2,19 @@
 
 #pragma once
 
+#include <list>
+
 #include "SDL_events.h"
 #include "SDL_rect.h"
 #include "SDL_render.h"
+#include "texture.h"
 
 namespace spaceshooter {
+
+struct Projectile {
+  SDL_FPoint position;
+  float speed;
+};
 
 class Player {
  public:
@@ -18,11 +26,17 @@ class Player {
   void Render();
 
  private:
-  SDL_Texture* texture_ = nullptr;
+  void Shoot();
+  void UpdateProjectiles(Uint32 delta_time);
+
+  Texture ship_texture_;
   SDL_FPoint position_;
-  float width_;
-  float height_;
   float speed_;
+  Uint32 last_shoot_time_;
+  Uint32 shoot_cooldown_;
+
+  Texture projectile_texture_;
+  std::list<Projectile> projectiles_;
 };
 
 }  // namespace spaceshooter
