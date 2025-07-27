@@ -14,11 +14,12 @@ Player::Player()
     : ship_texture_("assets/image/SpaceShip.png"),
       projectile_texture_("assets/image/bullet.png") {
   constexpr float kScale = 0.25;
-  ship_texture_.width *= kScale;
-  ship_texture_.height *= kScale;
+  size_ = ship_texture_.GetSize();
+  size_.x *= kScale;
+  size_.y *= kScale;
 
-  position_.x = Game::Get().GetWindowWidth() / 2 - ship_texture_.width / 2;
-  position_.y = Game::Get().GetWindowHeight() - ship_texture_.height;
+  position_.x = Game::Get().GetWindowWidth() / 2 - size_.x / 2;
+  position_.y = Game::Get().GetWindowHeight() - size_.y;
 
   speed_ = 0.5;
   last_shoot_time_ = 0;
@@ -49,16 +50,16 @@ void Player::Update(Uint32 delta_time) {
     position_.x = 0;
   }
 
-  if (position_.x > Game::Get().GetWindowWidth() - ship_texture_.width) {
-    position_.x = Game::Get().GetWindowWidth() - ship_texture_.width;
+  if (position_.x > Game::Get().GetWindowWidth() - size_.x) {
+    position_.x = Game::Get().GetWindowWidth() - size_.x;
   }
 
   if (position_.y < 0) {
     position_.y = 0;
   }
 
-  if (position_.y > Game::Get().GetWindowHeight() - ship_texture_.height) {
-    position_.y = Game::Get().GetWindowHeight() - ship_texture_.height;
+  if (position_.y > Game::Get().GetWindowHeight() - size_.y) {
+    position_.y = Game::Get().GetWindowHeight() - size_.y;
   }
 
   UpdateProjectiles(delta_time);
@@ -69,36 +70,36 @@ void Player::Update(Uint32 delta_time) {
 }
 
 void Player::Render() {
-  SDL_FRect player_rect{position_.x, position_.y, ship_texture_.width,
-                        ship_texture_.height};
+  SDL_FRect player_rect = GetRect();
   SDL_RenderCopyF(Game::Get().GetRenderer(), ship_texture_.texture, nullptr,
                   &player_rect);
 
   for (const Projectile& projectile : projectiles_) {
-    SDL_FRect projectile_rect{projectile.position.x, projectile.position.y,
-                              projectile_texture_.width,
-                              projectile_texture_.height};
+    SDL_FRect projectile_rect = projectile.GetRect();
     SDL_RenderCopyF(Game::Get().GetRenderer(), projectile_texture_.texture,
                     nullptr, &projectile_rect);
   }
 }
 
-SDL_FPoint Player::getPosition() const {
-  return {position_.x + 0.5f * ship_texture_.width,
-          position_.y + 0.5f * ship_texture_.height};
+SDL_FPoint Player::GetPosition() const {
+  return {position_.x + 0.5f * size_.x, position_.y + 0.5f * size_.y};
+}
+
+SDL_FRect Player::GetRect() const {
+  return SDL_FRect{position_.x, position_.y, size_.x, size_.y};
 }
 
 void Player::Shoot() {
   constexpr float kProjectileSpeed = 0.3;
   if (SDL_GetTicks() - last_shoot_time_ > shoot_cooldown_) {
-    Projectile new_projectile;
-    new_projectile.speed = kProjectileSpeed;
-    new_projectile.position =
-        SDL_FPoint{position_.x + 0.5f * ship_texture_.width -
-                       0.5f * projectile_texture_.width,
-                   position_.y};
+    Projectile projectile;
+    projectile.size = projectile_texture_.GetSize();
+    projectile.speed = kProjectileSpeed;
+    projectile.position = SDL_FPoint{
+        position_.x + 0.5f * size_.x - 0.5f * projectile_texture_.GetSize().x,
+        position_.y};
 
-    projectiles_.push_back(new_projectile);
+    projectiles_.push_back(projectile);
     last_shoot_time_ = SDL_GetTicks();
   }
 }
@@ -108,7 +109,7 @@ void Player::UpdateProjectiles(Uint32 delta_time) {
     auto& projectile = *it;
     auto distance = delta_time * projectile.speed;
     projectile.position.y -= distance;
-    if (projectile.position.y < -projectile_texture_.height) {
+    if (projectile.position.y < -projectile.size.y) {
       it = projectiles_.erase(it);
     } else {
       it++;

@@ -12,8 +12,13 @@
 namespace spaceshooter {
 
 struct Projectile {
+  SDL_FPoint size;
   SDL_FPoint position;
   float speed;
+
+  SDL_FRect GetRect() const {
+    return SDL_FRect{position.x, position.y, size.x, size.y};
+  }
 };
 
 class Player {
@@ -26,13 +31,15 @@ class Player {
   void Render();
 
   // return center
-  SDL_FPoint getPosition() const;
+  SDL_FPoint GetPosition() const;
+  SDL_FRect GetRect() const;
 
  private:
   void Shoot();
   void UpdateProjectiles(Uint32 delta_time);
 
   Texture ship_texture_;
+  SDL_FPoint size_;
   SDL_FPoint position_;
   float speed_;
   Uint32 last_shoot_time_;

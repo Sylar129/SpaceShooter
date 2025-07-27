@@ -22,13 +22,7 @@ float getRandomFloat() {
 
 Environment::Environment()
     : enemy_texture_("assets/image/insect-1.png"),
-      enemy_projectile_texture_("assets/image/laser-1.png") {
-  enemy_texture_.width *= 0.25;
-  enemy_texture_.height *= 0.25;
-
-  enemy_projectile_texture_.width *= 0.25;
-  enemy_projectile_texture_.height *= 0.25;
-}
+      enemy_projectile_texture_("assets/image/laser-1.png") {}
 
 void Environment::SpawnEnemy(Player* player) {
   if (getRandomFloat() > 0.1) {
@@ -37,6 +31,11 @@ void Environment::SpawnEnemy(Player* player) {
 
   Enemy enemy;
   enemy.target_player = player;
+
+  enemy.size = enemy_texture_.GetSize();
+  enemy.size.x *= 0.25;
+  enemy.size.y *= 0.25;
+
   enemy.position.x = getRandomFloat() * Game::Get().GetWindowWidth();
   enemy.position.y = 0;
   enemy.speed = 0.2;
@@ -66,12 +65,15 @@ void Environment::UpdateEnemy(Uint32 delta_time) {
     } else {
       if (SDL_GetTicks() - enemy.last_shoot_time > enemy.shoot_cooldown) {
         EnemyProjectile projectile;
+        projectile.size = enemy_projectile_texture_.GetSize();
+        projectile.size.x *= 0.25;
+        projectile.size.y *= 0.25;
         projectile.speed = 0.3;
         projectile.position = enemy.position;
 
         auto direction =
-            SDL_FPoint{enemy.target_player->getPosition().x - enemy.position.x,
-                       enemy.target_player->getPosition().y - enemy.position.y};
+            SDL_FPoint{enemy.target_player->GetPosition().x - enemy.position.x,
+                       enemy.target_player->GetPosition().y - enemy.position.y};
         auto temp =
             std::sqrt(direction.x * direction.x + direction.y * direction.y);
         direction.x /= temp;
@@ -104,8 +106,7 @@ void Environment::UpdateEnemyProjectiles(Uint32 delta_time) {
 
 void Environment::RenderEnemy() {
   for (const auto& enemy : enemies_) {
-    SDL_FRect rect{enemy.position.x, enemy.position.y, enemy_texture_.width,
-                   enemy_texture_.height};
+    SDL_FRect rect = enemy.GetRect();
     SDL_RenderCopyF(Game::Get().GetRenderer(), enemy_texture_.texture, nullptr,
                     &rect);
   }
@@ -113,9 +114,7 @@ void Environment::RenderEnemy() {
 
 void Environment::RenderEnemyProjectile() {
   for (const auto& projectile : enemy_projectiles_) {
-    SDL_FRect rect{projectile.position.x, projectile.position.y,
-                   enemy_projectile_texture_.width,
-                   enemy_projectile_texture_.height};
+    SDL_FRect rect = projectile.GetRect();
     double angle = std::atan2(projectile.direction.y, projectile.direction.x) *
                        180 / M_PI -
                    90;

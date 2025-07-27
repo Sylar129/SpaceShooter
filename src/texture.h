@@ -11,9 +11,10 @@ namespace spaceshooter {
 struct Texture {
   explicit Texture(const std::string& file_path);
   ~Texture();
+
+  // shoule use a vector, but there's no type yet
+  SDL_FPoint GetSize() const;
   SDL_Texture* texture = nullptr;
-  float width;
-  float height;
 };
 
 }  // namespace spaceshooter

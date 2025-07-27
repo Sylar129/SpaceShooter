@@ -13,16 +13,26 @@ class Player;
 
 struct Enemy {
   Player* target_player;
+  SDL_FPoint size;
   SDL_FPoint position;
   float speed;
   Uint32 last_shoot_time;
   Uint32 shoot_cooldown;
+
+  SDL_FRect GetRect() const {
+    return SDL_FRect{position.x, position.y, size.x, size.y};
+  }
 };
 
 struct EnemyProjectile {
+  SDL_FPoint size;
   SDL_FPoint position;
   SDL_FPoint direction;
   float speed;
+
+  SDL_FRect GetRect() const {
+    return SDL_FRect{position.x, position.y, size.x, size.y};
+  }
 };
 
 class Environment {
