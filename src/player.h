@@ -34,11 +34,16 @@ class Player {
   SDL_FPoint GetPosition() const;
   SDL_FRect GetRect() const;
 
+  void TakeDamage(int damage);
+  bool IsAlive() const { return is_alive; }
+
  private:
   void Shoot();
   void UpdateProjectiles(Uint32 delta_time);
 
   Texture ship_texture_;
+  int health_ = 5;
+  bool is_alive;
   SDL_FPoint size_;
   SDL_FPoint position_;
   float speed_;

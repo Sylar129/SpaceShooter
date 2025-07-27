@@ -24,14 +24,14 @@ Environment::Environment()
     : enemy_texture_("assets/image/insect-1.png"),
       enemy_projectile_texture_("assets/image/laser-1.png") {}
 
-void Environment::SpawnEnemy(Player* player) {
-  if (getRandomFloat() > 0.1) {
+void Environment::SetTargetPlayer(Player* player) { target_player_ = player; }
+
+void Environment::SpawnEnemy() {
+  if (getRandomFloat() > 0.1 || !target_player_->IsAlive()) {
     return;
   }
 
   Enemy enemy;
-  enemy.target_player = player;
-
   enemy.size = enemy_texture_.GetSize();
   enemy.size.x *= 0.25;
   enemy.size.y *= 0.25;
@@ -45,6 +45,9 @@ void Environment::SpawnEnemy(Player* player) {
 }
 
 void Environment::Update(Uint32 delta_time) {
+  if (!target_player_->IsAlive()) {
+    return;
+  }
   UpdateEnemyProjectiles(delta_time);
 
   UpdateEnemy(delta_time);
@@ -72,8 +75,8 @@ void Environment::UpdateEnemy(Uint32 delta_time) {
         projectile.position = enemy.position;
 
         auto direction =
-            SDL_FPoint{enemy.target_player->GetPosition().x - enemy.position.x,
-                       enemy.target_player->GetPosition().y - enemy.position.y};
+            SDL_FPoint{target_player_->GetPosition().x - enemy.position.x,
+                       target_player_->GetPosition().y - enemy.position.y};
         auto temp =
             std::sqrt(direction.x * direction.x + direction.y * direction.y);
         direction.x /= temp;
@@ -91,16 +94,24 @@ void Environment::UpdateEnemy(Uint32 delta_time) {
 }
 
 void Environment::UpdateEnemyProjectiles(Uint32 delta_time) {
+  auto player_rect = target_player_->GetRect();
   for (auto it = enemy_projectiles_.begin(); it != enemy_projectiles_.end();) {
-    auto& enemy = *it;
-    auto distance = delta_time * enemy.speed;
-    enemy.position.x += distance * enemy.direction.x;
-    enemy.position.y += distance * enemy.direction.y;
-    if (enemy.position.y > Game::Get().GetWindowHeight()) {
+    auto& projectile = *it;
+    auto distance = delta_time * projectile.speed;
+    projectile.position.x += distance * projectile.direction.x;
+    projectile.position.y += distance * projectile.direction.y;
+    if (projectile.position.y > Game::Get().GetWindowHeight()) {
       it = enemy_projectiles_.erase(it);
-    } else {
-      it++;
+      continue;
     }
+    auto projectile_rect = projectile.GetRect();
+    if (SDL_HasIntersectionF(&projectile_rect, &player_rect)) {
+      target_player_->TakeDamage(1);
+      it = enemy_projectiles_.erase(it);
+      continue;
+    }
+
+    it++;
   }
 }
 

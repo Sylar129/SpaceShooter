@@ -9,7 +9,7 @@
 
 namespace spaceshooter {
 
-SceneMain::SceneMain() {}
+SceneMain::SceneMain() { Environment::Get().SetTargetPlayer(&player_); }
 
 void SceneMain::Init() {}
 
@@ -20,7 +20,7 @@ void SceneMain::Update(Uint32 delta_time) {
 
   Environment::Get().Update(delta_time);
 
-  Environment::Get().SpawnEnemy(&player_);
+  Environment::Get().SpawnEnemy();
 }
 
 void SceneMain::Render() {

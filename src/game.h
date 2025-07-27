@@ -27,6 +27,8 @@ class Game {
   void Clean();
   void ChangeScene(std::shared_ptr<Scene> scene);
 
+  void StopRunning() { is_running_ = false; }
+
   SDL_Window* GetWindow() const { return window_; }
   SDL_Renderer* GetRenderer() const { return renderer_; }
   int GetWindowWidth() const { return window_width_; }

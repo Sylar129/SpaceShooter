@@ -12,7 +12,6 @@ namespace spaceshooter {
 class Player;
 
 struct Enemy {
-  Player* target_player;
   int health = 1;
   SDL_FPoint size;
   SDL_FPoint position;
@@ -47,7 +46,8 @@ class Environment {
     return environment;
   }
 
-  void SpawnEnemy(Player* player);
+  void SetTargetPlayer(Player* player);
+  void SpawnEnemy();
   std::list<Enemy>& GetEnemies() { return enemies_; }
 
   void Update(Uint32 delta_time);
@@ -61,6 +61,8 @@ class Environment {
 
   void RenderEnemy();
   void RenderEnemyProjectile();
+
+  Player* target_player_;
 
   Texture enemy_texture_;
   Texture enemy_projectile_texture_;
