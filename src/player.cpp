@@ -83,6 +83,11 @@ void Player::Render() {
   }
 }
 
+SDL_FPoint Player::getPosition() const {
+  return {position_.x + 0.5f * ship_texture_.width,
+          position_.y + 0.5f * ship_texture_.height};
+}
+
 void Player::Shoot() {
   constexpr float kProjectileSpeed = 0.3;
   if (SDL_GetTicks() - last_shoot_time_ > shoot_cooldown_) {

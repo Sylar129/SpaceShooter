@@ -25,6 +25,9 @@ class Player {
   void Update(Uint32 delta_time);
   void Render();
 
+  // return center
+  SDL_FPoint getPosition() const;
+
  private:
   void Shoot();
   void UpdateProjectiles(Uint32 delta_time);
