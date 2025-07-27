@@ -22,12 +22,13 @@ float getRandomFloat() {
 
 Environment::Environment()
     : enemy_texture_("assets/image/insect-1.png"),
-      enemy_projectile_texture_("assets/image/laser-1.png") {}
+      enemy_projectile_texture_("assets/image/laser-1.png"),
+      explosion_texture_("assets/effect/explosion.png") {}
 
 void Environment::SetTargetPlayer(Player* player) { target_player_ = player; }
 
 void Environment::SpawnEnemy() {
-  if (getRandomFloat() > 0.1 || !target_player_->IsAlive()) {
+  if (getRandomFloat() > 0.02 || !target_player_->IsAlive()) {
     return;
   }
 
@@ -51,19 +52,36 @@ void Environment::Update(Uint32 delta_time) {
   UpdateEnemyProjectiles(delta_time);
 
   UpdateEnemy(delta_time);
+
+  UpdateExplosion();
 }
 
 void Environment::Render() {
+  RenderExplosion();
   RenderEnemy();
   RenderEnemyProjectile();
 }
 
 void Environment::UpdateEnemy(Uint32 delta_time) {
+  auto current_time = SDL_GetTicks();
+  auto player_rect = target_player_->GetRect();
   for (auto it = enemies_.begin(); it != enemies_.end();) {
     auto& enemy = *it;
     auto distance = delta_time * enemy.speed;
     enemy.position.y += distance;
-    if (enemy.position.y > Game::Get().GetWindowHeight() || enemy.health <= 0) {
+    if (enemy.position.y > Game::Get().GetWindowHeight()) {
+      it = enemies_.erase(it);
+    } else if (enemy.health <= 0) {
+      Explosion explosion;
+      explosion.size = explosion_texture_.GetSize();
+      explosion.total_frame = explosion.size.x / explosion.size.y;
+      explosion.size.x = explosion.size.y;
+
+      explosion.start_time = current_time;
+      explosion.position = SDL_FPoint{
+          enemy.position.x + 0.5f * enemy.size.x - 0.5f * explosion.size.x,
+          enemy.position.y + 0.5f * enemy.size.y - 0.5f * explosion.size.y};
+      explosions_.push_back(explosion);
       it = enemies_.erase(it);
     } else {
       if (SDL_GetTicks() - enemy.last_shoot_time > enemy.shoot_cooldown) {
@@ -86,6 +104,13 @@ void Environment::UpdateEnemy(Uint32 delta_time) {
 
         enemy_projectiles_.push_back(projectile);
         enemy.last_shoot_time = SDL_GetTicks();
+      }
+
+      auto projectile_rect = enemy.GetRect();
+      if (SDL_HasIntersectionF(&projectile_rect, &player_rect)) {
+        target_player_->TakeDamage(1);
+        it = enemies_.erase(it);
+        continue;
       }
 
       it++;
@@ -134,4 +159,28 @@ void Environment::RenderEnemyProjectile() {
                       nullptr, SDL_RendererFlip::SDL_FLIP_NONE);
   }
 }
+
+void Environment::UpdateExplosion() {
+  Uint32 current_time = SDL_GetTicks();
+  for (auto it = explosions_.begin(); it != explosions_.end();) {
+    auto& explosion = *it;
+    explosion.current_frame =
+        (current_time - explosion.start_time) * explosion.fps / 1000;
+    if (explosion.current_frame >= explosion.total_frame) {
+      it = explosions_.erase(it);
+    } else {
+      ++it;
+    }
+  }
+}
+
+void Environment::RenderExplosion() {
+  for (const auto& explosion : explosions_) {
+    SDL_Rect src_rect = explosion.GetSourceRect();
+    SDL_FRect dst_rect = explosion.GetTargetRect();
+    SDL_RenderCopyF(Game::Get().GetRenderer(), explosion_texture_.texture,
+                    &src_rect, &dst_rect);
+  }
+}
+
 }  // namespace spaceshooter

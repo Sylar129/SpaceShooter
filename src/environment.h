@@ -35,6 +35,24 @@ struct EnemyProjectile {
   }
 };
 
+struct Explosion {
+  SDL_FPoint size;
+  SDL_FPoint position;
+  int total_frame;
+  int current_frame = 0;
+  int fps = 10;
+  Uint32 start_time;
+
+  SDL_Rect GetSourceRect() const {
+    return SDL_Rect{static_cast<int>(current_frame * size.x), 0,
+                    static_cast<int>(size.x), static_cast<int>(size.y)};
+  }
+
+  SDL_FRect GetTargetRect() const {
+    return SDL_FRect{position.x, position.y, size.x, size.y};
+  }
+};
+
 class Environment {
  public:
   Environment(const Environment&) = delete;
@@ -62,12 +80,18 @@ class Environment {
   void RenderEnemy();
   void RenderEnemyProjectile();
 
+  void UpdateExplosion();
+  void RenderExplosion();
+
   Player* target_player_;
 
   Texture enemy_texture_;
   Texture enemy_projectile_texture_;
   std::list<Enemy> enemies_;
   std::list<EnemyProjectile> enemy_projectiles_;
+
+  Texture explosion_texture_;
+  std::list<Explosion> explosions_;
 };
 
 }  // namespace spaceshooter
