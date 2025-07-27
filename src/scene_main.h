@@ -4,12 +4,18 @@
 
 #include "player.h"
 #include "scene.h"
+#include "texture.h"
 
 namespace spaceshooter {
 
+struct Enemy {
+  SDL_FPoint position;
+  float speed;
+};
+
 class SceneMain : public Scene {
  public:
-  SceneMain() = default;
+  SceneMain();
   ~SceneMain() override = default;
 
   void Init() override;
@@ -19,7 +25,12 @@ class SceneMain : public Scene {
   void Clean() override;
 
  private:
+  void UpdateEnemy(Uint32 delta_time);
+  void SpawnEnemy();
   Player player_;
+
+  Texture enemy_texture_;
+  std::list<Enemy> enemies_;
 };
 
 }  // namespace spaceshooter
