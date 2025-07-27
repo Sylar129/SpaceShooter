@@ -40,6 +40,7 @@ add_executable(${TARGET}
                 src/main.cpp
                 src/game.cpp
                 src/scene_main.cpp
+                src/environment.cpp
                 src/texture.cpp
                 src/player.cpp)
 
