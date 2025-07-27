@@ -6,6 +6,7 @@
 #include "SDL_keyboard.h"
 #include "SDL_rect.h"
 #include "SDL_scancode.h"
+#include "environment.h"
 #include "game.h"
 
 namespace spaceshooter {
@@ -105,15 +106,32 @@ void Player::Shoot() {
 }
 
 void Player::UpdateProjectiles(Uint32 delta_time) {
+  auto& enemies = Environment::Get().GetEnemies();
+
   for (auto it = projectiles_.begin(); it != projectiles_.end();) {
     auto& projectile = *it;
     auto distance = delta_time * projectile.speed;
     projectile.position.y -= distance;
     if (projectile.position.y < -projectile.size.y) {
       it = projectiles_.erase(it);
-    } else {
-      it++;
+      continue;
     }
+    bool hitted = false;
+    auto projectile_rect = projectile.GetRect();
+    for (auto& enemy : enemies) {
+      auto enemy_rect = enemy.GetRect();
+      if (SDL_HasIntersectionF(&projectile_rect, &enemy_rect)) {
+        enemy.health--;
+        hitted = true;
+        continue;
+      }
+    }
+    if (hitted) {
+      it = projectiles_.erase(it);
+      continue;
+    }
+
+    it++;
   }
 }
 

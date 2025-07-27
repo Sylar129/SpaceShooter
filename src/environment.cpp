@@ -60,7 +60,7 @@ void Environment::UpdateEnemy(Uint32 delta_time) {
     auto& enemy = *it;
     auto distance = delta_time * enemy.speed;
     enemy.position.y += distance;
-    if (enemy.position.y > Game::Get().GetWindowHeight()) {
+    if (enemy.position.y > Game::Get().GetWindowHeight() || enemy.health <= 0) {
       it = enemies_.erase(it);
     } else {
       if (SDL_GetTicks() - enemy.last_shoot_time > enemy.shoot_cooldown) {

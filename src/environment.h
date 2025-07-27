@@ -13,6 +13,7 @@ class Player;
 
 struct Enemy {
   Player* target_player;
+  int health = 1;
   SDL_FPoint size;
   SDL_FPoint position;
   float speed;
@@ -47,6 +48,7 @@ class Environment {
   }
 
   void SpawnEnemy(Player* player);
+  std::list<Enemy>& GetEnemies() { return enemies_; }
 
   void Update(Uint32 delta_time);
   void Render();
