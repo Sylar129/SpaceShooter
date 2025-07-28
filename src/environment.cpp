@@ -23,7 +23,8 @@ float getRandomFloat() {
 Environment::Environment()
     : enemy_texture_("assets/image/insect-1.png"),
       enemy_projectile_texture_("assets/image/laser-1.png"),
-      explosion_texture_("assets/effect/explosion.png") {}
+      explosion_texture_("assets/effect/explosion.png"),
+      item_life_("assets/image/bonus_life.png") {}
 
 void Environment::SetTargetPlayer(Player* player) { target_player_ = player; }
 
@@ -182,5 +183,25 @@ void Environment::RenderExplosion() {
                     &src_rect, &dst_rect);
   }
 }
+
+void Environment::DropItem(const Enemy& enemy) {
+  Item item;
+  item.size = item_life_.GetSize();
+  item.type == Item::Type::kLife;
+  item.position.x = enemy.position.x + enemy.size.x * 0.5f - item.size.x * 0.5f;
+  item.position.y = enemy.position.y + enemy.size.y * 0.5f - item.size.y * 0.5f;
+
+  float angle = getRandomFloat() * 2 * M_PI;
+  item.direction.x = std::cos(angle);
+  item.direction.y = std::sin(angle);
+
+  items.push_back(item);
+}
+
+void Environment::UpdateItems(Uint32 delta_time) {
+  
+}
+
+void Environment::RenderItems() {}
 
 }  // namespace spaceshooter
