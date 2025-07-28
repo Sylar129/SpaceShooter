@@ -2,7 +2,8 @@
 
 #include "texture.h"
 
-#include "SDL_image.h"
+#include "SDL3/SDL.h"
+#include "SDL3_image/SDL_image.h"
 #include "game.h"
 
 namespace spaceshooter {
@@ -18,10 +19,7 @@ Texture::~Texture() { SDL_DestroyTexture(texture); }
 
 SDL_FPoint Texture::GetSize() const {
   SDL_FPoint size;
-  int w, h;
-  SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
-  size.x = w;
-  size.y = h;
+  SDL_GetTextureSize(texture, &size.x, &size.y);
   return size;
 }
 

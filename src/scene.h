@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "SDL_events.h"
+#include "SDL3/SDL_events.h"
 
 namespace spaceshooter {
 
@@ -12,7 +12,7 @@ class Scene {
 
   virtual void Init() = 0;
   virtual void HandleEvent(SDL_Event* event) = 0;
-  virtual void Update(Uint32 delta_time) = 0;
+  virtual void Update(Uint64 delta_time) = 0;
   virtual void Render() = 0;
   virtual void Clean() = 0;
 };

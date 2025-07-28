@@ -2,11 +2,8 @@
 
 #include "game.h"
 
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_log.h"
-#include "SDL_stdinc.h"
-#include "SDL_timer.h"
+#include "SDL3/SDL.h"
+#include "SDL3_image/SDL_image.h"
 #include "scene_main.h"
 
 namespace spaceshooter {
@@ -17,28 +14,15 @@ Game::Game(int width, int height)
 Game::~Game() {}
 
 void Game::Init() {
-  if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+  if (!SDL_Init(SDL_INIT_VIDEO)) {
     SDL_Log("SDL_Init Error: %s\n", SDL_GetError());
     return;
   }
 
-  window_ = SDL_CreateWindow("SpaceShooter", SDL_WINDOWPOS_CENTERED,
-                             SDL_WINDOWPOS_CENTERED, window_width_,
-                             window_height_, SDL_WINDOW_SHOWN);
-  if (!window_) {
-    SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
-    return;
-  }
-
-  renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
-  if (!renderer_) {
-    SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-    return;
-  }
-
-  constexpr int kImgInitFlag = IMG_INIT_PNG;
-  if (IMG_Init(kImgInitFlag) != kImgInitFlag) {
-    SDL_Log("IMG_Init Error: %s\n", IMG_GetError());
+  if (!SDL_CreateWindowAndRenderer("SpaceShooter", window_width_,
+                                   window_height_, SDL_WINDOW_RESIZABLE,
+                                   &window_, &renderer_)) {
+    SDL_Log("SDL_CreateWindowAndRenderer Error: %s\n", SDL_GetError());
     return;
   }
 
@@ -49,12 +33,12 @@ void Game::Init() {
 
 void Game::Run() {
   constexpr bool kEnableConstantFps = true;
-  constexpr Uint32 kFps = 60;
-  constexpr Uint32 kFrameTime = 1000 / kFps;
+  constexpr Uint64 kFps = 60;
+  constexpr Uint64 kFrameTime = 1000 / kFps;
 
-  Uint32 delta_time = 0;
+  Uint64 delta_time = 0;
   while (is_running_) {
-    Uint32 start_time = SDL_GetTicks();
+    Uint64 start_time = SDL_GetTicks();
     HandleEvent();
     Update(delta_time);
     Render();
@@ -72,8 +56,6 @@ void Game::Run() {
 }
 
 void Game::Clean() {
-  IMG_Quit();
-
   SDL_DestroyRenderer(renderer_);
   SDL_DestroyWindow(window_);
   SDL_Quit();
@@ -92,14 +74,14 @@ void Game::ChangeScene(std::shared_ptr<Scene> scene) {
 void Game::HandleEvent() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
-    if (event.type == SDL_QUIT) {
+    if (event.type == SDL_EVENT_QUIT) {
       is_running_ = false;
     }
     current_scene_->HandleEvent(&event);
   }
 }
 
-void Game::Update(Uint32 delta_time) { current_scene_->Update(delta_time); }
+void Game::Update(Uint64 delta_time) { current_scene_->Update(delta_time); }
 
 void Game::Render() {
   SDL_RenderClear(renderer_);

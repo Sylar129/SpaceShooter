@@ -2,16 +2,17 @@
 
 #include "environment.h"
 
-#include <cmath>
 #include <random>
 
-#include "SDL_timer.h"
+#include "SDL3/SDL_timer.h"
 #include "game.h"
 #include "player.h"
 
 namespace spaceshooter {
 
 namespace {
+constexpr float M_PI = 3.1415926f;
+
 float getRandomFloat() {
   static std::random_device rd;
   static std::mt19937 gen(rd());
@@ -45,7 +46,7 @@ void Environment::SpawnEnemy() {
   enemies_.push_back(enemy);
 }
 
-void Environment::Update(Uint32 delta_time) {
+void Environment::Update(Uint64 delta_time) {
   if (!target_player_->IsAlive()) {
     return;
   }
@@ -62,7 +63,7 @@ void Environment::Render() {
   RenderEnemyProjectile();
 }
 
-void Environment::UpdateEnemy(Uint32 delta_time) {
+void Environment::UpdateEnemy(Uint64 delta_time) {
   auto current_time = SDL_GetTicks();
   auto player_rect = target_player_->GetRect();
   for (auto it = enemies_.begin(); it != enemies_.end();) {
@@ -107,7 +108,7 @@ void Environment::UpdateEnemy(Uint32 delta_time) {
       }
 
       auto projectile_rect = enemy.GetRect();
-      if (SDL_HasIntersectionF(&projectile_rect, &player_rect)) {
+      if (SDL_HasRectIntersectionFloat(&projectile_rect, &player_rect)) {
         target_player_->TakeDamage(1);
         it = enemies_.erase(it);
         continue;
@@ -118,7 +119,7 @@ void Environment::UpdateEnemy(Uint32 delta_time) {
   }
 }
 
-void Environment::UpdateEnemyProjectiles(Uint32 delta_time) {
+void Environment::UpdateEnemyProjectiles(Uint64 delta_time) {
   auto player_rect = target_player_->GetRect();
   for (auto it = enemy_projectiles_.begin(); it != enemy_projectiles_.end();) {
     auto& projectile = *it;
@@ -130,7 +131,7 @@ void Environment::UpdateEnemyProjectiles(Uint32 delta_time) {
       continue;
     }
     auto projectile_rect = projectile.GetRect();
-    if (SDL_HasIntersectionF(&projectile_rect, &player_rect)) {
+    if (SDL_HasRectIntersectionFloat(&projectile_rect, &player_rect)) {
       target_player_->TakeDamage(1);
       it = enemy_projectiles_.erase(it);
       continue;
@@ -143,8 +144,8 @@ void Environment::UpdateEnemyProjectiles(Uint32 delta_time) {
 void Environment::RenderEnemy() {
   for (const auto& enemy : enemies_) {
     SDL_FRect rect = enemy.GetRect();
-    SDL_RenderCopyF(Game::Get().GetRenderer(), enemy_texture_.texture, nullptr,
-                    &rect);
+    SDL_RenderTexture(Game::Get().GetRenderer(), enemy_texture_.texture,
+                      nullptr, &rect);
   }
 }
 
@@ -154,14 +155,14 @@ void Environment::RenderEnemyProjectile() {
     double angle = std::atan2(projectile.direction.y, projectile.direction.x) *
                        180 / M_PI -
                    90;
-    SDL_RenderCopyExF(Game::Get().GetRenderer(),
-                      enemy_projectile_texture_.texture, nullptr, &rect, angle,
-                      nullptr, SDL_RendererFlip::SDL_FLIP_NONE);
+    SDL_RenderTextureRotated(Game::Get().GetRenderer(),
+                             enemy_projectile_texture_.texture, nullptr, &rect,
+                             angle, nullptr, SDL_FlipMode::SDL_FLIP_NONE);
   }
 }
 
 void Environment::UpdateExplosion() {
-  Uint32 current_time = SDL_GetTicks();
+  Uint64 current_time = SDL_GetTicks();
   for (auto it = explosions_.begin(); it != explosions_.end();) {
     auto& explosion = *it;
     explosion.current_frame =
@@ -176,10 +177,10 @@ void Environment::UpdateExplosion() {
 
 void Environment::RenderExplosion() {
   for (const auto& explosion : explosions_) {
-    SDL_Rect src_rect = explosion.GetSourceRect();
+    SDL_FRect src_rect = explosion.GetSourceRect();
     SDL_FRect dst_rect = explosion.GetTargetRect();
-    SDL_RenderCopyF(Game::Get().GetRenderer(), explosion_texture_.texture,
-                    &src_rect, &dst_rect);
+    SDL_RenderTexture(Game::Get().GetRenderer(), explosion_texture_.texture,
+                      &src_rect, &dst_rect);
   }
 }
 

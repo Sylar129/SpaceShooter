@@ -4,7 +4,7 @@
 
 #include <list>
 
-#include "SDL_rect.h"
+#include "SDL3/SDL_rect.h"
 #include "texture.h"
 
 namespace spaceshooter {
@@ -16,8 +16,8 @@ struct Enemy {
   SDL_FPoint size;
   SDL_FPoint position;
   float speed;
-  Uint32 last_shoot_time;
-  Uint32 shoot_cooldown;
+  Uint64 last_shoot_time;
+  Uint64 shoot_cooldown;
 
   SDL_FRect GetRect() const {
     return SDL_FRect{position.x, position.y, size.x, size.y};
@@ -41,11 +41,10 @@ struct Explosion {
   int total_frame;
   int current_frame = 0;
   int fps = 10;
-  Uint32 start_time;
+  Uint64 start_time;
 
-  SDL_Rect GetSourceRect() const {
-    return SDL_Rect{static_cast<int>(current_frame * size.x), 0,
-                    static_cast<int>(size.x), static_cast<int>(size.y)};
+  SDL_FRect GetSourceRect() const {
+    return SDL_FRect{current_frame * size.x, 0, size.x, size.y};
   }
 
   SDL_FRect GetTargetRect() const {
@@ -68,14 +67,14 @@ class Environment {
   void SpawnEnemy();
   std::list<Enemy>& GetEnemies() { return enemies_; }
 
-  void Update(Uint32 delta_time);
+  void Update(Uint64 delta_time);
   void Render();
 
  private:
   Environment();
 
-  void UpdateEnemy(Uint32 delta_time);
-  void UpdateEnemyProjectiles(Uint32 delta_time);
+  void UpdateEnemy(Uint64 delta_time);
+  void UpdateEnemyProjectiles(Uint64 delta_time);
 
   void RenderEnemy();
   void RenderEnemyProjectile();

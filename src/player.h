@@ -4,9 +4,9 @@
 
 #include <list>
 
-#include "SDL_events.h"
-#include "SDL_rect.h"
-#include "SDL_render.h"
+#include "SDL3/SDL_events.h"
+#include "SDL3/SDL_rect.h"
+#include "SDL3/SDL_render.h"
 #include "texture.h"
 
 namespace spaceshooter {
@@ -27,7 +27,7 @@ class Player {
   ~Player();
 
   void HandleEvent(SDL_Event* event);
-  void Update(Uint32 delta_time);
+  void Update(Uint64 delta_time);
   void Render();
 
   // return center
@@ -39,7 +39,7 @@ class Player {
 
  private:
   void Shoot();
-  void UpdateProjectiles(Uint32 delta_time);
+  void UpdateProjectiles(Uint64 delta_time);
 
   Texture ship_texture_;
   int health_ = 5;
@@ -47,8 +47,8 @@ class Player {
   SDL_FPoint size_;
   SDL_FPoint position_;
   float speed_;
-  Uint32 last_shoot_time_;
-  Uint32 shoot_cooldown_;
+  Uint64 last_shoot_time_;
+  Uint64 shoot_cooldown_;
 
   Texture projectile_texture_;
   std::list<Projectile> projectiles_;

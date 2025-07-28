@@ -2,8 +2,6 @@
 
 #include "scene_main.h"
 
-#include <random>
-
 #include "environment.h"
 #include "game.h"
 
@@ -15,7 +13,7 @@ void SceneMain::Init() {}
 
 void SceneMain::HandleEvent(SDL_Event* event) { player_.HandleEvent(event); }
 
-void SceneMain::Update(Uint32 delta_time) {
+void SceneMain::Update(Uint64 delta_time) {
   player_.Update(delta_time);
 
   Environment::Get().Update(delta_time);

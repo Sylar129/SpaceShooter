@@ -2,10 +2,8 @@
 
 #include "player.h"
 
-#include "SDL_image.h"
-#include "SDL_keyboard.h"
-#include "SDL_rect.h"
-#include "SDL_scancode.h"
+#include "SDL3/SDL.h"
+#include "SDL3_image/SDL_image.h"
 #include "environment.h"
 #include "game.h"
 
@@ -32,7 +30,7 @@ Player::~Player() {}
 
 void Player::HandleEvent(SDL_Event* event) {}
 
-void Player::Update(Uint32 delta_time) {
+void Player::Update(Uint64 delta_time) {
   if (!is_alive) {
     return;
   }
@@ -76,13 +74,13 @@ void Player::Update(Uint32 delta_time) {
 
 void Player::Render() {
   SDL_FRect player_rect = GetRect();
-  SDL_RenderCopyF(Game::Get().GetRenderer(), ship_texture_.texture, nullptr,
-                  &player_rect);
+  SDL_RenderTexture(Game::Get().GetRenderer(), ship_texture_.texture, nullptr,
+                    &player_rect);
 
   for (const Projectile& projectile : projectiles_) {
     SDL_FRect projectile_rect = projectile.GetRect();
-    SDL_RenderCopyF(Game::Get().GetRenderer(), projectile_texture_.texture,
-                    nullptr, &projectile_rect);
+    SDL_RenderTexture(Game::Get().GetRenderer(), projectile_texture_.texture,
+                      nullptr, &projectile_rect);
   }
 }
 
@@ -103,7 +101,7 @@ void Player::TakeDamage(int damage) {
 }
 
 void Player::Shoot() {
-  constexpr float kProjectileSpeed = 0.3;
+  constexpr float kProjectileSpeed = 0.3f;
   if (SDL_GetTicks() - last_shoot_time_ > shoot_cooldown_) {
     Projectile projectile;
     projectile.size = projectile_texture_.GetSize();
@@ -117,7 +115,7 @@ void Player::Shoot() {
   }
 }
 
-void Player::UpdateProjectiles(Uint32 delta_time) {
+void Player::UpdateProjectiles(Uint64 delta_time) {
   auto& enemies = Environment::Get().GetEnemies();
 
   for (auto it = projectiles_.begin(); it != projectiles_.end();) {
@@ -132,7 +130,7 @@ void Player::UpdateProjectiles(Uint32 delta_time) {
     auto projectile_rect = projectile.GetRect();
     for (auto& enemy : enemies) {
       auto enemy_rect = enemy.GetRect();
-      if (SDL_HasIntersectionF(&projectile_rect, &enemy_rect)) {
+      if (SDL_HasRectIntersectionFloat(&projectile_rect, &enemy_rect)) {
         enemy.health--;
         hitted = true;
         continue;
