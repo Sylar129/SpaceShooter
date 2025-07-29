@@ -21,10 +21,7 @@ float getRandomFloat() {
 }
 }  // namespace
 
-Environment::Environment()
-    : enemy_texture_("assets/image/insect-1.png"),
-      enemy_projectile_texture_("assets/image/laser-1.png"),
-      explosion_texture_("assets/effect/explosion.png") {}
+Environment::Environment() {}
 
 void Environment::SetTargetPlayer(Player* player) { target_player_ = player; }
 

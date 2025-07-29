@@ -26,6 +26,11 @@ void Game::Init() {
     return;
   }
 
+  asset_store_ = std::make_unique<AssetStore>(renderer_);
+  asset_store_->LoadTexture("assets/image/insect-1.png");
+  asset_store_->LoadTexture("assets/image/laser-1.png");
+  asset_store_->LoadTexture("assets/effect/explosion.png");
+
   is_running_ = true;
   current_scene_ = std::make_shared<SceneMain>();
   current_scene_->Init();
@@ -70,6 +75,8 @@ void Game::ChangeScene(std::shared_ptr<Scene> scene) {
   current_scene_ = scene;
   current_scene_->Init();
 }
+
+AssetStore& Game::GetAssetStore() const { return *asset_store_; }
 
 void Game::HandleEvent() {
   SDL_Event event;

@@ -6,6 +6,7 @@
 
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
+#include "asset_store.h"
 #include "scene.h"
 
 namespace spaceshooter {
@@ -33,12 +34,15 @@ class Game {
   int GetWindowWidth() const { return window_width_; }
   int GetWindowHeight() const { return window_height_; }
 
+  AssetStore& GetAssetStore() const;
+
  private:
   Game(int width, int height);
   void HandleEvent();
   void Update(Uint64 delta_time);
   void Render();
 
+  std::unique_ptr<AssetStore> asset_store_;
   bool is_running_;
   std::shared_ptr<Scene> current_scene_;
   SDL_Window* window_;

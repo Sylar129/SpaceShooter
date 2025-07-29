@@ -3,15 +3,16 @@
 #pragma once
 
 #include <list>
+#include <string>
 
 #include "SDL3/SDL_rect.h"
-#include "texture.h"
 
 namespace spaceshooter {
 
 class Player;
 
 struct Enemy {
+  std::string texture_path;
   int health = 1;
   SDL_FPoint size;
   SDL_FPoint position;
@@ -25,6 +26,7 @@ struct Enemy {
 };
 
 struct EnemyProjectile {
+  std::string texture_path;
   SDL_FPoint size;
   SDL_FPoint position;
   SDL_FPoint direction;
@@ -36,6 +38,7 @@ struct EnemyProjectile {
 };
 
 struct Explosion {
+  std::string texture_path;
   SDL_FPoint size;
   SDL_FPoint position;
   int total_frame;
@@ -84,12 +87,9 @@ class Environment {
 
   Player* target_player_;
 
-  Texture enemy_texture_;
-  Texture enemy_projectile_texture_;
   std::list<Enemy> enemies_;
   std::list<EnemyProjectile> enemy_projectiles_;
 
-  Texture explosion_texture_;
   std::list<Explosion> explosions_;
 };
 

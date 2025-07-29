@@ -3,15 +3,16 @@
 #pragma once
 
 #include <list>
+#include <string>
 
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
-#include "texture.h"
 
 namespace spaceshooter {
 
 struct Projectile {
+  std::string texture_path;
   SDL_FPoint size;
   SDL_FPoint position;
   float speed;
@@ -41,7 +42,7 @@ class Player {
   void Shoot();
   void UpdateProjectiles(Uint64 delta_time);
 
-  Texture ship_texture_;
+  std::string texture_path_;
   int health_ = 5;
   bool is_alive;
   SDL_FPoint size_;
@@ -50,7 +51,6 @@ class Player {
   Uint64 last_shoot_time_;
   Uint64 shoot_cooldown_;
 
-  Texture projectile_texture_;
   std::list<Projectile> projectiles_;
 };
 
