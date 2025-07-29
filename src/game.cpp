@@ -71,6 +71,11 @@ void Game::ChangeScene(std::shared_ptr<Scene> scene) {
   current_scene_->Init();
 }
 
+bool Game::IsOutsideWindow(const SDL_FRect& rect) const {
+  return rect.x + rect.w < 0 || rect.x > window_width_ || rect.y + rect.h < 0 ||
+         rect.y > window_height_;
+}
+
 void Game::HandleEvent() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {

@@ -100,6 +100,8 @@ void Player::TakeDamage(int damage) {
   }
 }
 
+void Player::GetItem(const Item& item) { health_++; }
+
 void Player::Shoot() {
   constexpr float kProjectileSpeed = 0.3f;
   if (SDL_GetTicks() - last_shoot_time_ > shoot_cooldown_) {

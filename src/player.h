@@ -21,6 +21,8 @@ struct Projectile {
   }
 };
 
+struct Item;
+
 class Player {
  public:
   Player();
@@ -37,12 +39,14 @@ class Player {
   void TakeDamage(int damage);
   bool IsAlive() const { return is_alive; }
 
+  void GetItem(const Item& item);
+
  private:
   void Shoot();
   void UpdateProjectiles(Uint64 delta_time);
 
   Texture ship_texture_;
-  int health_ = 5;
+  int health_ = 50;
   bool is_alive;
   SDL_FPoint size_;
   SDL_FPoint position_;

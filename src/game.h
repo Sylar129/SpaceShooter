@@ -33,6 +33,8 @@ class Game {
   int GetWindowWidth() const { return window_width_; }
   int GetWindowHeight() const { return window_height_; }
 
+  bool IsOutsideWindow(const SDL_FRect& rect) const;
+
  private:
   Game(int width, int height);
   void HandleEvent();

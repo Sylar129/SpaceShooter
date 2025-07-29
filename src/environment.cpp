@@ -11,7 +11,7 @@
 namespace spaceshooter {
 
 namespace {
-constexpr float M_PI = 3.1415926f;
+constexpr float kPi = 3.1415926f;
 
 float getRandomFloat() {
   static std::random_device rd;
@@ -24,7 +24,8 @@ float getRandomFloat() {
 Environment::Environment()
     : enemy_texture_("assets/image/insect-1.png"),
       enemy_projectile_texture_("assets/image/laser-1.png"),
-      explosion_texture_("assets/effect/explosion.png") {}
+      explosion_texture_("assets/effect/explosion.png"),
+      item_life_("assets/image/bonus_life.png") {}
 
 void Environment::SetTargetPlayer(Player* player) { target_player_ = player; }
 
@@ -55,9 +56,12 @@ void Environment::Update(Uint64 delta_time) {
   UpdateEnemy(delta_time);
 
   UpdateExplosion();
+
+  UpdateItems(delta_time);
 }
 
 void Environment::Render() {
+  RenderItems();
   RenderExplosion();
   RenderEnemy();
   RenderEnemyProjectile();
@@ -83,6 +87,11 @@ void Environment::UpdateEnemy(Uint64 delta_time) {
           enemy.position.x + 0.5f * enemy.size.x - 0.5f * explosion.size.x,
           enemy.position.y + 0.5f * enemy.size.y - 0.5f * explosion.size.y};
       explosions_.push_back(explosion);
+
+      if (getRandomFloat() > 0.5) {
+        DropItem(enemy);
+      }
+
       it = enemies_.erase(it);
     } else {
       if (SDL_GetTicks() - enemy.last_shoot_time > enemy.shoot_cooldown) {
@@ -152,9 +161,9 @@ void Environment::RenderEnemy() {
 void Environment::RenderEnemyProjectile() {
   for (const auto& projectile : enemy_projectiles_) {
     SDL_FRect rect = projectile.GetRect();
-    double angle = std::atan2(projectile.direction.y, projectile.direction.x) *
-                       180 / M_PI -
-                   90;
+    double angle =
+        std::atan2(projectile.direction.y, projectile.direction.x) * 180 / kPi -
+        90;
     SDL_RenderTextureRotated(Game::Get().GetRenderer(),
                              enemy_projectile_texture_.texture, nullptr, &rect,
                              angle, nullptr, SDL_FlipMode::SDL_FLIP_NONE);
@@ -181,6 +190,64 @@ void Environment::RenderExplosion() {
     SDL_FRect dst_rect = explosion.GetTargetRect();
     SDL_RenderTexture(Game::Get().GetRenderer(), explosion_texture_.texture,
                       &src_rect, &dst_rect);
+  }
+}
+
+void Environment::DropItem(const Enemy& enemy) {
+  Item item;
+  item.size = item_life_.GetSize();
+  item.size.x *= 0.25;
+  item.size.y *= 0.25;
+  item.type = Item::Type::kLife;
+  item.position.x = enemy.position.x + enemy.size.x * 0.5f - item.size.x * 0.5f;
+  item.position.y = enemy.position.y + enemy.size.y * 0.5f - item.size.y * 0.5f;
+
+  float angle = getRandomFloat() * 2 * kPi;
+  item.direction.x = std::cos(angle);
+  item.direction.y = std::sin(angle);
+
+  item.speed = 0.1;
+
+  items_.push_back(item);
+}
+
+void Environment::UpdateItems(Uint32 delta_time) {
+  auto player_rect = target_player_->GetRect();
+
+  for (auto it = items_.begin(); it != items_.end();) {
+    auto& item = *it;
+    auto item_rect = item.GetRect();
+    if (Game::Get().IsOutsideWindow(item_rect) && item.rebound_time == 0) {
+      it = items_.erase(it);
+    } else if (SDL_HasRectIntersectionFloat(&player_rect, &item_rect)) {
+      target_player_->GetItem(item);
+      it = items_.erase(it);
+    } else {
+      if (item.position.x < 0 ||
+          item.position.x > Game::Get().GetWindowWidth() - item.size.x) {
+        item.rebound_time--;
+        item.direction.x = -item.direction.x;
+      }
+      if (item.position.y < 0 ||
+          item.position.y > Game::Get().GetWindowWidth() - item.size.y) {
+        item.rebound_time--;
+        item.direction.y = -item.direction.y;
+      }
+      auto distance = item.speed * delta_time;
+
+      item.position.x += distance * item.direction.x;
+      item.position.y += distance * item.direction.y;
+
+      ++it;
+    }
+  }
+}
+
+void Environment::RenderItems() {
+  for (const auto& item : items_) {
+    SDL_FRect rect = item.GetRect();
+    SDL_RenderTexture(Game::Get().GetRenderer(), item_life_.texture, nullptr,
+                      &rect);
   }
 }
 

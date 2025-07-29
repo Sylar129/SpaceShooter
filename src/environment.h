@@ -35,6 +35,24 @@ struct EnemyProjectile {
   }
 };
 
+struct Item {
+  enum class Type {
+    kLife,
+    kShield,
+    kTime,
+  };
+  Type type;
+  SDL_FPoint size;
+  SDL_FPoint position;
+  SDL_FPoint direction;
+  float speed;
+  int rebound_time = 3;
+
+  SDL_FRect GetRect() const {
+    return SDL_FRect{position.x, position.y, size.x, size.y};
+  }
+};
+
 struct Explosion {
   SDL_FPoint size;
   SDL_FPoint position;
@@ -82,6 +100,10 @@ class Environment {
   void UpdateExplosion();
   void RenderExplosion();
 
+  void DropItem(const Enemy& enemy);
+  void UpdateItems(Uint32 delta_time);
+  void RenderItems();
+
   Player* target_player_;
 
   Texture enemy_texture_;
@@ -91,6 +113,9 @@ class Environment {
 
   Texture explosion_texture_;
   std::list<Explosion> explosions_;
+
+  Texture item_life_;
+  std::list<Item> items_;
 };
 
 }  // namespace spaceshooter
