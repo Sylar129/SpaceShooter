@@ -26,6 +26,26 @@ void Game::Init() {
     return;
   }
 
+  if (!MIX_Init()) {
+    SDL_Log("MIX_Init Error: %s\n", SDL_GetError());
+    return;
+  }
+
+  SDL_AudioSpec audio_spec{SDL_AUDIO_U8, 2, 44100};
+  mixer_ =
+      MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &audio_spec);
+  if (!mixer_) {
+    SDL_Log("MIX_CreateMixerDevice Error: %s\n", SDL_GetError());
+    return;
+  }
+
+  bgm_ = MIX_LoadAudio(
+      mixer_, "assets/music/03_Racing_Through_Asteroids_Loop.ogg", true);
+  if (!bgm_) {
+    SDL_Log("MIX_LoadAudio Error: %s\n", SDL_GetError());
+    return;
+  }
+
   is_running_ = true;
   current_scene_ = std::make_shared<SceneMain>();
   current_scene_->Init();
@@ -37,6 +57,8 @@ void Game::Run() {
   constexpr Uint64 kFrameTime = 1000 / kFps;
 
   Uint64 delta_time = 0;
+
+  MIX_PlayAudio(mixer_, bgm_);
   while (is_running_) {
     Uint64 start_time = SDL_GetTicks();
     HandleEvent();
@@ -56,6 +78,10 @@ void Game::Run() {
 }
 
 void Game::Clean() {
+  MIX_DestroyAudio(bgm_);
+  MIX_DestroyMixer(mixer_);
+  MIX_Quit();
+
   SDL_DestroyRenderer(renderer_);
   SDL_DestroyWindow(window_);
   SDL_Quit();

@@ -6,6 +6,7 @@
 
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
+#include "SDL3_mixer/SDL_mixer.h"
 #include "scene.h"
 
 namespace spaceshooter {
@@ -47,6 +48,8 @@ class Game {
   int window_width_;
   int window_height_;
   SDL_Renderer* renderer_;
+  MIX_Mixer* mixer_;
+  MIX_Audio* bgm_;
 };
 
 }  // namespace spaceshooter

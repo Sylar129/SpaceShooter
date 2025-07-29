@@ -21,7 +21,7 @@ include(FetchContent)
 
 FetchContent_Declare(
     SDL3
-    URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.18.zip
+    URL https://github.com/libsdl-org/SDL/archive/refs/heads/main.zip
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(SDL3)
@@ -36,6 +36,15 @@ set(SDLIMAGE_VENDORED OFF)
 FetchContent_MakeAvailable(SDL3_image)
 include_directories(AFTER ${SDL3_image_SOURCE_DIR}/include)
 
+FetchContent_Declare(
+    SDL3_mixer
+    URL  https://github.com/libsdl-org/SDL_mixer/archive/refs/heads/main.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+set(SDLMIXER_VENDORED OFF)
+FetchContent_MakeAvailable(SDL3_mixer)
+include_directories(AFTER ${SDL3_mixer_SOURCE_DIR}/include)
+
 add_executable(${TARGET}
                 src/main.cpp
                 src/game.cpp
@@ -46,4 +55,5 @@ add_executable(${TARGET}
 
 target_link_libraries(${TARGET}
                         SDL3::SDL3
-                        SDL3_image::SDL3_image)
+                        SDL3_image::SDL3_image
+                        SDL3_mixer::SDL3_mixer)
