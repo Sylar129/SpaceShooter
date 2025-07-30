@@ -31,20 +31,14 @@ void Game::Init() {
     return;
   }
 
-  SDL_AudioSpec audio_spec{SDL_AUDIO_U8, 2, 44100};
-  mixer_ =
-      MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &audio_spec);
-  if (!mixer_) {
-    SDL_Log("MIX_CreateMixerDevice Error: %s\n", SDL_GetError());
-    return;
-  }
+  mixer_ = std::make_unique<Mixer>();
 
-  bgm_ = MIX_LoadAudio(
-      mixer_, "assets/music/03_Racing_Through_Asteroids_Loop.ogg", true);
-  if (!bgm_) {
-    SDL_Log("MIX_LoadAudio Error: %s\n", SDL_GetError());
-    return;
-  }
+  mixer_->LoadAudio("assets/music/03_Racing_Through_Asteroids_Loop.ogg", "bgm");
+  mixer_->LoadAudio("assets/sound/eff5.wav", "get_item");
+  mixer_->LoadAudio("assets/sound/explosion3.wav", "enemy_explode");
+  mixer_->LoadAudio("assets/sound/explosion1.wav", "player_explode");
+  mixer_->LoadAudio("assets/sound/laser_shoot4.wav", "player_shoot");
+  mixer_->LoadAudio("assets/sound/xs_laser.wav", "enemy_shoot");
 
   is_running_ = true;
   current_scene_ = std::make_shared<SceneMain>();
@@ -58,7 +52,7 @@ void Game::Run() {
 
   Uint64 delta_time = 0;
 
-  MIX_PlayAudio(mixer_, bgm_);
+  mixer_->PlayAudio("bgm");
   while (is_running_) {
     Uint64 start_time = SDL_GetTicks();
     HandleEvent();
@@ -78,8 +72,7 @@ void Game::Run() {
 }
 
 void Game::Clean() {
-  MIX_DestroyAudio(bgm_);
-  MIX_DestroyMixer(mixer_);
+  mixer_.reset();
   MIX_Quit();
 
   SDL_DestroyRenderer(renderer_);

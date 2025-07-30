@@ -51,6 +51,7 @@ add_executable(${TARGET}
                 src/scene_main.cpp
                 src/environment.cpp
                 src/texture.cpp
+                src/mixer.cpp
                 src/player.cpp)
 
 target_link_libraries(${TARGET}

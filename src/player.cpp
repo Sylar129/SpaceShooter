@@ -113,6 +113,7 @@ void Player::Shoot() {
         position_.y};
 
     projectiles_.push_back(projectile);
+    Game::Get().GetMixer().PlayAudio("player_shoot");
     last_shoot_time_ = SDL_GetTicks();
   }
 }

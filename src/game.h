@@ -6,7 +6,7 @@
 
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
-#include "SDL3_mixer/SDL_mixer.h"
+#include "mixer.h"
 #include "scene.h"
 
 namespace spaceshooter {
@@ -36,6 +36,8 @@ class Game {
 
   bool IsOutsideWindow(const SDL_FRect& rect) const;
 
+  Mixer& GetMixer() { return *mixer_; }
+
  private:
   Game(int width, int height);
   void HandleEvent();
@@ -48,8 +50,7 @@ class Game {
   int window_width_;
   int window_height_;
   SDL_Renderer* renderer_;
-  MIX_Mixer* mixer_;
-  MIX_Audio* bgm_;
+  std::unique_ptr<Mixer> mixer_;
 };
 
 }  // namespace spaceshooter

@@ -86,6 +86,8 @@ void Environment::UpdateEnemy(Uint64 delta_time) {
       explosion.position = SDL_FPoint{
           enemy.position.x + 0.5f * enemy.size.x - 0.5f * explosion.size.x,
           enemy.position.y + 0.5f * enemy.size.y - 0.5f * explosion.size.y};
+      Game::Get().GetMixer().PlayAudio("enemy_explode");
+
       explosions_.push_back(explosion);
 
       if (getRandomFloat() > 0.5) {
@@ -111,6 +113,8 @@ void Environment::UpdateEnemy(Uint64 delta_time) {
         direction.y /= temp;
 
         projectile.direction = direction;
+
+        Game::Get().GetMixer().PlayAudio("enemy_shoot");
 
         enemy_projectiles_.push_back(projectile);
         enemy.last_shoot_time = SDL_GetTicks();
@@ -221,6 +225,7 @@ void Environment::UpdateItems(Uint32 delta_time) {
       it = items_.erase(it);
     } else if (SDL_HasRectIntersectionFloat(&player_rect, &item_rect)) {
       target_player_->GetItem(item);
+      Game::Get().GetMixer().PlayAudio("get_item");
       it = items_.erase(it);
     } else {
       if (item.position.x < 0 ||
