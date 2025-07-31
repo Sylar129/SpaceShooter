@@ -19,7 +19,9 @@ class SceneMain : public Scene {
   void Clean() override;
 
  private:
+  void RenderUi() const;
   Player player_;
+  Texture health_texture_;
 };
 
 }  // namespace spaceshooter

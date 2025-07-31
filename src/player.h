@@ -37,7 +37,9 @@ class Player {
   SDL_FRect GetRect() const;
 
   void TakeDamage(int damage);
-  bool IsAlive() const { return is_alive; }
+  int GetHealth() const { return health_; }
+  int GetMaxHealth() const { return 50; }
+  bool IsAlive() const { return health_ > 0; }
 
   void GetItem(const Item& item);
 
@@ -47,7 +49,6 @@ class Player {
 
   Texture ship_texture_;
   int health_ = 50;
-  bool is_alive;
   SDL_FPoint size_;
   SDL_FPoint position_;
   float speed_;

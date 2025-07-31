@@ -23,7 +23,6 @@ Player::Player()
   speed_ = 0.5;
   last_shoot_time_ = 0;
   shoot_cooldown_ = 500;
-  is_alive = true;
 }
 
 Player::~Player() {}
@@ -31,7 +30,7 @@ Player::~Player() {}
 void Player::HandleEvent(SDL_Event* event) {}
 
 void Player::Update(Uint64 delta_time) {
-  if (!is_alive) {
+  if (!IsAlive()) {
     return;
   }
   auto key_states = SDL_GetKeyboardState(nullptr);
@@ -95,7 +94,6 @@ SDL_FRect Player::GetRect() const {
 void Player::TakeDamage(int damage) {
   health_ -= damage;
   if (health_ <= 0) {
-    is_alive = false;
     // Game::Get().StopRunning();
   }
 }

@@ -48,9 +48,6 @@ void Environment::SpawnEnemy() {
 }
 
 void Environment::Update(Uint64 delta_time) {
-  if (!target_player_->IsAlive()) {
-    return;
-  }
   UpdateEnemyProjectiles(delta_time);
 
   UpdateEnemy(delta_time);
@@ -96,7 +93,8 @@ void Environment::UpdateEnemy(Uint64 delta_time) {
 
       it = enemies_.erase(it);
     } else {
-      if (SDL_GetTicks() - enemy.last_shoot_time > enemy.shoot_cooldown) {
+      if (SDL_GetTicks() - enemy.last_shoot_time > enemy.shoot_cooldown &&
+          target_player_->IsAlive()) {
         EnemyProjectile projectile;
         projectile.size = enemy_projectile_texture_.GetSize();
         projectile.size.x *= 0.25;
