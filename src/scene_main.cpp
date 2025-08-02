@@ -7,7 +7,10 @@
 
 namespace spaceshooter {
 
-SceneMain::SceneMain() : health_texture_("assets/image/Health UI Black.png") {
+SceneMain::SceneMain()
+    : health_texture_("assets/image/Health UI Black.png"),
+      near_stars_("assets/image/Stars-A.png"),
+      far_stars_("assets/image/Stars-B.png") {
   Environment::Get().SetTargetPlayer(&player_);
 }
 
@@ -24,6 +27,8 @@ void SceneMain::Update(Uint64 delta_time) {
 }
 
 void SceneMain::Render() {
+  RenderBackgound();
+
   player_.Render();
 
   Environment::Get().Render();
@@ -48,6 +53,26 @@ void SceneMain::RenderUi() const {
     SDL_RenderTexture(Game::Get().GetRenderer(), health_texture_.texture,
                       nullptr, &start_rect);
     start_rect.x += 10 + health_texture_.GetSize().x;
+  }
+}
+
+void SceneMain::RenderBackgound() const {
+  // draw near
+  SDL_FPoint near_size = near_stars_.GetSize();
+
+  for (int i = 0; i < Game::Get().GetWindowWidth(); i += near_size.y) {
+    SDL_FRect rect{i, 0, near_size.x, near_size.y};
+    SDL_RenderTexture(Game::Get().GetRenderer(), near_stars_.texture, nullptr,
+                      &rect);
+  }
+
+  // draw far
+
+  SDL_FPoint far_size = far_stars_.GetSize();
+  for (int i = 0; i < Game::Get().GetWindowWidth(); i += far_size.y) {
+    SDL_FRect rect{i, 0, far_size.x, far_size.y};
+    SDL_RenderTexture(Game::Get().GetRenderer(), far_stars_.texture, nullptr,
+                      &rect);
   }
 }
 

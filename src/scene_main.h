@@ -20,8 +20,12 @@ class SceneMain : public Scene {
 
  private:
   void RenderUi() const;
+  void RenderBackgound() const;
   Player player_;
   Texture health_texture_;
+
+  Texture near_stars_;
+  Texture far_stars_;
 };
 
 }  // namespace spaceshooter
